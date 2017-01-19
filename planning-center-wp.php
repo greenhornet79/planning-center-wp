@@ -32,7 +32,6 @@ if ( ! defined( 'WPINC' ) ) {
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-planning-center-wp.php';
-require plugin_dir_path( __FILE__ ) . 'includes/libraries/pco-php/pco-php.php';
 
 /**
  * Begins execution of the plugin.

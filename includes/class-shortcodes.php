@@ -7,28 +7,18 @@ class Planning_Center_WP_Shortcodes {
 	
 	function __construct()	{
 		
+		add_shortcode( 'pcwp_checkins', array( $this, 'checkins' ) );
+		add_shortcode( 'pcwp_giving', array( $this, 'giving' ) );
 		add_shortcode( 'pcwp_people', array( $this, 'people' ) );
 		add_shortcode( 'pcwp_services', array( $this, 'services' ) );
-		add_shortcode( 'pcwp_households', array( $this, 'households' ) );
-		// add_shortcode( 'pcwp_donations', array( $this, 'donations' ) );
 
 	}
 
 	public function people( $atts ) 
 	{
 		$args = shortcode_atts( array(
-	        'first_name' => '',
-	        'last_name' => '',
-	        'nickname' => '',
-	        'goes_by_name' => '',
-	        'middle_name' => '',
-	        'last_name' => '',
-	        'birthdate' => '',
-	        'anniversary' => '',
-	        'gender' 	=> '',
-	        'grade'		=> '',
-	        'child'		=> '',
-	        'status'	=> '',
+			'method' 	=> '',
+			'parameters'	=> '',
     	), $atts );
 
     	$api = new PCO_PHP_API;
@@ -37,16 +27,17 @@ class Planning_Center_WP_Shortcodes {
     	ob_start(); ?>
 
     	<?php 
+    		echo '<h3 class="planning-center-wp-title">' . ucwords( $args['method'] ) . ' in People</h3>';
     		if ( is_array( $people ) ) {
-				echo '<h3>People in People</h3>';
-				echo '<ul class="planning-center-wp people-list">';
+				
+				echo '<ul class="planning-center-wp-list planning-center-wp-people-list">';
 				foreach( $people as $person ) {
 					
 					echo '<li>' . $person->attributes->first_name . ' ' . $person->attributes->last_name . '</li>';
 				}
 				echo '</ul>';
 			} else {
-				echo '<p>No results found.</p>';
+				echo '<p class="planning-center-wp-not-found">No results found.</p>';
 			}
 		?>
 	
@@ -57,68 +48,38 @@ class Planning_Center_WP_Shortcodes {
 
 	}
 
-	public function households( $atts ) 
-	{
-		$a = shortcode_atts( array(
-	        'foo' => 'something',
-	        'bar' => 'something else',
-    	), $atts );
 
-    	$api = new PCO_PHP_API;
-    	$households = $api->get_households();
-
-    	ob_start(); ?>
-
-    	<?php 
-    		if ( is_array( $households ) ) {
-				echo '<h3>Households in People</h3>';
-				echo '<ul>';
-				foreach( $households as $house ) {
-					echo '<li>Name: ' . $house->attributes->name . ' Contact: ' . $house->attributes->primary_contact_name . '</li>';
-				}
-				echo '</ul>';
-			} else {
-				echo '<p>' . $households . '</p>';
-			}
-		?>
-	
-		<?php  $content = ob_get_contents();
-		ob_end_clean();
-
-		return $content; 	
-
-	}
 
 	public function services( $atts ) 
 	{
-		$a = shortcode_atts( array(
-	        'foo' => 'something',
-	        'bar' => 'something else',
+		$args = shortcode_atts( array(
+			'method' 	=> '',
+			'parameters'	=> '',
     	), $atts );
 
     	$api = new PCO_PHP_API;
-    	$services = $api->get_services();
+    	$services = $api->get_services( $args );
 
     	ob_start(); ?>
 
     	<?php 
-
-    		if ( is_array( $services ) ) {
-				echo '<h3>People in Services</h3>';
-				echo '<ul>';
-				foreach( $services as $item ) {
-					echo '<li>' . $item->attributes->first_name . ' ' . $item->attributes->last_name . '</li>';
+    		echo '<h3 class="planning-center-wp-title">' . ucwords( $args['method'] ) . ' in Services</h3>';
+    		if ( is_array( $services ) && !empty( $services ) ) {
+				// @todo load a certain view based on the method passed
+				echo '<ul class="planning-center-wp-list planning-center-wp-services-list">';
+				foreach( $services as $service ) {
+					echo '<li>' . $service->attributes->first_name . ' ' . $service->attributes->last_name . '</li>';
 				}
 				echo '</ul>';
 			} else {
-				echo '<p>' . $services . '</p>';
+				echo '<p class="planning-center-wp-not-found">No results found.</p>';
 			}
 		?>
 	
 		<?php  $content = ob_get_contents();
 		ob_end_clean();
 
-		return $content; 	
+		return apply_filters('planning_center_wp_services_shortcode_output', $content ); 	
 	}
 
 	public function donations( $atts ) 

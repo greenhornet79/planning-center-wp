@@ -44,3 +44,6 @@ Please let us know in the support forums what would be most helpful to you and w
 
 = 1.0 =
 * First version
+
+## Shortcodes
+

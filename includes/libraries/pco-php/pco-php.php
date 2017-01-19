@@ -22,90 +22,54 @@ class PCO_PHP_API {
 	public function get_people( $args = '') 
 	{	
 
-		if ( $args ) {
-			$args = $this->format_args( $args );
-		}
+		$method = $args['method'];
 
-		$response = wp_remote_get( 'https://api.planningcenteronline.com/people/v2/people/?' . $args, $this->get_headers() );
+		$people = new PCO_PHP_People($args);
+		$url = $people->$method();
 
-		if( is_array($response) ) {
-		  $header = $response['headers']; // array of http header lines
-		  $body = json_decode( $response['body'] ); // use the content
-
-		  $people = $body->data;
-
-		} else {
-			$people = 'Could not be found';
-		}
-
-		return $people;
-
-	}
-
-	public function format_args( $args ) 
-	{	
-
-		$query = '';
-
-		$keys = array(
-			'first_name',
-			'last_name', 
-			'nickname',
-			'goes_by_name',
-			'middle_name',
-			'birthdate',
-			'anniversary',
-			'gender',
-			'grade',
-			'child',
-			'status'
-		);
-
-		foreach( apply_filters('planning_center_wp_format_args_keys', $keys ) as $key ) {
-			if ( $args[$key] ) {
-				$query .= 'where[' . $key . ']=' . $args[$key];
-			}
-		}
-
-		return $query;
-			
-	}
-
-	public function get_households() 
-	{
-
-		$response = wp_remote_get( 'https://api.planningcenteronline.com/people/v2/households/', $this->get_headers() );
+		$response = wp_remote_get( $url, $this->get_headers() );
+		$result = '';
 
 		if( is_array($response) ) {
 		  $header = $response['headers']; // array of http header lines
 		  $body = json_decode( $response['body'] ); // use the content
 
-		  $households = $body->data;
+		  if ( isset( $body->errors[0]->detail ) ) {
+		  	$result = $body->errors[0]->detail;
+		  } else {
+		  	$result = apply_filters( 'planning_center_wp_get_people_body', $body->data, $body );
+		  }
 
-		} else {
-			$households = 'Could not be found';
 		}
 
-		return $households;
+		return $result;
 
 	}
 
-	public function get_services() 
+	public function get_services( $args = '' ) 
 	{
 		
-		$response = wp_remote_get( 'https://api.planningcenteronline.com/services/v2/people/', $this->get_headers() );
+		$method = $args['method'];
+
+		$services = new PCO_PHP_Services($args);
+		$url = $services->$method();
+
+		$response = wp_remote_get( $url, $this->get_headers() );
+		$result = '';
 
 		if( is_array($response) ) {
 		  $header = $response['headers']; // array of http header lines
 		  $body = json_decode( $response['body'] ); // use the content
 
-		  $services = $body->data;
+		  if ( isset( $body->errors[0]->detail ) ) {
+		  	$result = $body->errors[0]->detail;
+		  } else {
+		  	$result = apply_filters( 'planning_center_wp_get_services_body', $body->data, $body );
+		  }
 
-		} else {
-			$services = 'Could not be found.';
 		}
 
-		return $services;
+		return $result;
 
 	}
 

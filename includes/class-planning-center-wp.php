@@ -19,6 +19,10 @@ class Planning_Center_WP {
 		require_once PLANNING_CENTER_WP_PLUGIN_DIR . 'class-shortcodes.php';
 		$shortcodes = new Planning_Center_WP_Shortcodes;
 
+		require plugin_dir_path( __FILE__ ) . 'libraries/pco-php/pco-php.php';
+		require plugin_dir_path( __FILE__ ) . 'libraries/pco-php/people/pco-people.php';
+		require plugin_dir_path( __FILE__ ) . 'libraries/pco-php/services/pco-services.php';
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 
 	}
