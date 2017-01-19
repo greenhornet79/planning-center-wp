@@ -19,10 +19,14 @@ class PCO_PHP_API {
 
 	}
 	
-	public function get_people() 
-	{
+	public function get_people( $args = '') 
+	{	
 
-		$response = wp_remote_get( 'https://api.planningcenteronline.com/people/v2/people/', $this->get_headers() );
+		if ( $args ) {
+			$args = $this->format_args( $args );
+		}
+
+		$response = wp_remote_get( 'https://api.planningcenteronline.com/people/v2/people/?' . $args, $this->get_headers() );
 
 		if( is_array($response) ) {
 		  $header = $response['headers']; // array of http header lines
@@ -35,6 +39,54 @@ class PCO_PHP_API {
 		}
 
 		return $people;
+
+	}
+
+	public function format_args( $args ) 
+	{	
+
+		$query = '';
+
+		$keys = array(
+			'first_name',
+			'last_name', 
+			'nickname',
+			'goes_by_name',
+			'middle_name',
+			'birthdate',
+			'anniversary',
+			'gender',
+			'grade',
+			'child',
+			'status'
+		);
+
+		foreach( apply_filters('planning_center_wp_format_args_keys', $keys ) as $key ) {
+			if ( $args[$key] ) {
+				$query .= 'where[' . $key . ']=' . $args[$key];
+			}
+		}
+
+		return $query;
+			
+	}
+
+	public function get_households() 
+	{
+
+		$response = wp_remote_get( 'https://api.planningcenteronline.com/people/v2/households/', $this->get_headers() );
+
+		if( is_array($response) ) {
+		  $header = $response['headers']; // array of http header lines
+		  $body = json_decode( $response['body'] ); // use the content
+
+		  $households = $body->data;
+
+		} else {
+			$households = 'Could not be found';
+		}
+
+		return $households;
 
 	}
 

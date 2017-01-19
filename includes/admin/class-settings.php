@@ -24,8 +24,8 @@ class Planning_Center_WP_Settings {
 	        'manage_options',
 	        'planning-center-wp/planning-center-wp-admin.php',
 	        array( $this, 'settings_page'),
-	       // plugins_url( 'myplugin/images/icon.png' ),
-	        6
+	        'dashicons-admin-users',
+	        99
 	    );
 	}
 
@@ -72,6 +72,12 @@ class Planning_Center_WP_Settings {
 			<input id="submit" class="button button-primary" name="submit" value="Save Changes" type="submit">
 
 			</form>
+
+			<div class="container">
+				<p><strong>Available shortcodes</strong></p>
+				<p>[pcwp_people]</p>
+				<p>[pcwp_services]</p>
+			</div>
 			
 		</div>
 		<?php 
