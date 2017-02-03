@@ -75,8 +75,8 @@ class Planning_Center_WP_Settings {
 
 			<div class="container">
 				<p><strong>Available shortcodes</strong></p>
-				<p>[pcwp_people]</p>
-				<p>[pcwp_services]</p>
+				<p>[pcwp_people method="people"]</p>p>
+				<p>[pcwp_services method="songs"]</p>
 			</div>
 			
 		</div>
